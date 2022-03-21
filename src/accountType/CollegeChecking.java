@@ -11,6 +11,14 @@ import accounts.Profile;
 public class CollegeChecking extends Checking{
 	private int campusCode;
 	private static final double ANNUAL_INTEREST_RATE = 0.0025;
+	
+	/**
+	 Constructs a College Checking account with the same parameters as the Checking account.
+	 Holds a Campus Code, which is necessary to open this account.
+	 @param holder The person holding this account.
+	        balance The starting amount of money this account will have.
+	        campusCode The code representing which campus this account is from. Necessary to open.
+	 */
 	public CollegeChecking(Profile holder,double balance, int campusCode) {
 		super(holder, balance);
 		this.campusCode = campusCode;

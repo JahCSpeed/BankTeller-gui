@@ -17,7 +17,7 @@ import accountType.Savings;
 public class AccountDatabase {
 	private Account [] accounts;
 	private int numAcct;
-	private final int INCREASESIZE = 4;
+	private static final int INCREASESIZE = 4;
 	
 	/**
 	 Constructs the Account Database with an empty array and no accounts in it.

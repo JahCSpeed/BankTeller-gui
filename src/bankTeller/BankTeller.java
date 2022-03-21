@@ -21,6 +21,9 @@ public class BankTeller {
 	private boolean isRunning;
 	private Scanner scanInput;
 	private AccountDatabase mainDatabase;
+	private static final int CLOSEPARAMS = 5;
+	private static final int OPENCMMDEPOSITWITHDRAWPARAMS = 6;
+	private static final int OPENCSSPARAMS = 7;
 	
 	/**
 	 Constructs and initializes the variables to enable the BankTeller to run.
@@ -235,25 +238,25 @@ public class BankTeller {
 	private Account openAccountCommand(String accountType, Profile profile, String balance, String code, int paramSize) {
 		switch(accountType) {
 			case "C":
-				if(paramSize != 6) {
+				if(paramSize != OPENCMMDEPOSITWITHDRAWPARAMS) {
 					System.out.println("Missing data for opening an account.");
 					return null;
 				}
 				return this.checkingAccount(profile, balance);
 			case "CC":
-				if(paramSize != 7) {
+				if(paramSize != OPENCSSPARAMS) {
 					System.out.println("Missing data for opening an account.");
 					return null;
 				}
 				return this.collageCheckingAccount(profile, balance,code);
 			case "MM":
-				if(paramSize != 6) {
+				if(paramSize != OPENCMMDEPOSITWITHDRAWPARAMS) {
 					System.out.println("Missing data for opening an account.");
 					return null;
 				}
 				return this.moneyMarketAccount(profile, balance);
 			case "S":
-				if(paramSize != 7) {
+				if(paramSize != OPENCSSPARAMS) {
 					System.out.println("Missing data for opening an account.");
 					return null;
 				}
@@ -273,7 +276,7 @@ public class BankTeller {
 	 @return The account that was closed, null otherwise.
 	 */
 	private Account closeAccountCommand(String accountType, Profile profile, int paramSize) {
-		if(paramSize != 5) {
+		if(paramSize != CLOSEPARAMS) {
 			System.out.println("Missing data for closing an account.");
 			return null;
 		}
@@ -302,7 +305,7 @@ public class BankTeller {
 	 		 The new account created to find and deposit into otherwise.
 	 */
 	private Account depositCommand(String accountType, Profile profile, String balance,int paramSize) {
-		if(paramSize != 6) {
+		if(paramSize != OPENCMMDEPOSITWITHDRAWPARAMS) {
 			System.out.println("Missing data for depositing into account.");
 			return null;
 		}
@@ -347,7 +350,7 @@ public class BankTeller {
 	 		 The new account created to find and withdraw from otherwise.
 	 */
 	private Account withdrawCommand(String accountType, Profile profile, String balance,int paramSize) {
-		if(paramSize != 6) {
+		if(paramSize != OPENCMMDEPOSITWITHDRAWPARAMS) {
 			System.out.println("Missing data for withdraing from account.");
 			return null;
 		}

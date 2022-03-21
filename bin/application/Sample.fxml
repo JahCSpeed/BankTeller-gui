@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -8,34 +9,44 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="984.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SampleController">
+<GridPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="687.0" prefWidth="985.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SampleController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="553.0" minWidth="10.0" prefWidth="320.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="564.0" minWidth="10.0" prefWidth="332.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="454.0" minWidth="10.0" prefWidth="328.0" />
   </columnConstraints>
   <rowConstraints>
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="214.0" minHeight="10.0" prefHeight="210.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="134.0" vgrow="SOMETIMES" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+      <Pane prefHeight="200.0" prefWidth="200.0">
          <children>
             <ChoiceBox fx:id="selectChoiceBox" layoutX="14.0" layoutY="60.0" prefHeight="33.0" prefWidth="177.0" />
+            <Button fx:id="selectButton" layoutX="238.0" layoutY="64.0" mnemonicParsing="false" onAction="#doAction" prefHeight="25.0" prefWidth="82.0" text="Select" />
          </children>
       </Pane>
-      <Pane fx:id="openAccountPane" focusTraversable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+      <Pane fx:id="openAccountPane" focusTraversable="true" prefHeight="197.0" prefWidth="334.0" GridPane.columnIndex="1">
          <children>
-            <TextField layoutX="98.0" layoutY="14.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: John Doe" />
-            <TextField layoutX="98.0" layoutY="54.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: &quot;College&quot; Or &quot;C&quot;" />
-            <TextField layoutX="98.0" layoutY="94.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: 01/01/2000" />
+            <TextField fx:id="nameField" layoutX="98.0" layoutY="14.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: John Doe" />
+            <TextField fx:id="accountField" layoutX="98.0" layoutY="54.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: &quot;College&quot; Or &quot;C&quot;" />
+            <TextField fx:id="dobField" layoutX="98.0" layoutY="94.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: 01/01/2000" />
             <Label layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="57.0" text="Name" />
             <Label layoutX="14.0" layoutY="54.0" prefHeight="17.0" prefWidth="82.0" text="Account Type" />
             <Label layoutX="14.0" layoutY="94.0" text="Date of Birth" />
-            <Label layoutX="14.0" layoutY="134.0" text="Initial Balance" />
-            <TextField layoutX="98.0" layoutY="134.0" prefHeight="25.0" prefWidth="210.0" promptText="Non-Negative Numbers Only" />
+            <Button fx:id="moreInfoButton" layoutX="119.0" layoutY="136.0" mnemonicParsing="false" onAction="#moreInfoNeeded" prefHeight="25.0" prefWidth="96.0" text="Continue" />
+            <Label fx:id="openAccountPaneError" contentDisplay="CENTER" layoutX="-1.0" layoutY="163.0" prefHeight="51.0" prefWidth="334.0" textAlignment="CENTER" textFill="RED" />
+         </children>
+      </Pane>
+      <Pane fx:id="moreInfoPane" focusTraversable="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+         <children>
+            <TextField fx:id="campusCodeField" layoutX="98.0" layoutY="80.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: &quot;1&quot;, &quot;2&quot;, or &quot;3&quot;" />
+            <Label layoutX="14.0" layoutY="86.0" prefHeight="17.0" prefWidth="82.0" text="Campus Code" />
+            <Label layoutX="14.0" layoutY="44.0" text="Initial Balance" />
+            <TextField fx:id="balanceField" layoutX="98.0" layoutY="40.0" prefHeight="25.0" prefWidth="210.0" promptText="Non-Negative Numbers Only" />
+            <Label layoutX="117.0" layoutY="14.0" prefHeight="17.0" prefWidth="96.0" text="More Information" />
          </children>
       </Pane>
    </children>

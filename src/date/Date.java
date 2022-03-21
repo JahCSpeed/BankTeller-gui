@@ -146,7 +146,11 @@ public class Date implements Comparable<Date> {
 			this.month = Integer.parseInt(tokens[0]) - 1;
 			this.day = Integer.parseInt(tokens[1]);
 			this.year = Integer.parseInt(tokens[2]);
-		}catch(NumberFormatException e) {}
+		}catch(NumberFormatException e) {
+			this.month = -1;
+			this.day  = -1;
+			this.year = -1;
+		}
 		
 		
 	}

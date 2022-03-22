@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -16,37 +17,45 @@
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="454.0" minWidth="10.0" prefWidth="328.0" />
   </columnConstraints>
   <rowConstraints>
-      <RowConstraints maxHeight="214.0" minHeight="10.0" prefHeight="210.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="134.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="287.0" minHeight="10.0" prefHeight="287.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="167.0" minHeight="10.0" prefHeight="94.0" vgrow="SOMETIMES" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Pane prefHeight="200.0" prefWidth="200.0">
+      <Pane fx:id="actionPane" prefHeight="200.0" prefWidth="200.0">
          <children>
             <ChoiceBox fx:id="selectChoiceBox" layoutX="14.0" layoutY="60.0" prefHeight="33.0" prefWidth="177.0" />
-            <Button fx:id="selectButton" layoutX="238.0" layoutY="64.0" mnemonicParsing="false" onAction="#doAction" prefHeight="25.0" prefWidth="82.0" text="Select" />
+            <Button fx:id="selectButton" layoutX="238.0" layoutY="64.0" mnemonicParsing="false" onAction="#getInfo" prefHeight="25.0" prefWidth="82.0" text="Select" />
          </children>
       </Pane>
-      <Pane fx:id="openAccountPane" focusTraversable="true" prefHeight="197.0" prefWidth="334.0" GridPane.columnIndex="1">
+      <Pane fx:id="basicInfoPane" focusTraversable="true" prefHeight="197.0" prefWidth="334.0" GridPane.columnIndex="1">
          <children>
             <TextField fx:id="nameField" layoutX="98.0" layoutY="14.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: John Doe" />
-            <TextField fx:id="accountField" layoutX="98.0" layoutY="54.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: &quot;College&quot; Or &quot;C&quot;" />
-            <TextField fx:id="dobField" layoutX="98.0" layoutY="94.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: 01/01/2000" />
+            <TextField fx:id="dobField" layoutX="98.0" layoutY="162.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: 01/01/2000" />
             <Label layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="57.0" text="Name" />
-            <Label layoutX="14.0" layoutY="54.0" prefHeight="17.0" prefWidth="82.0" text="Account Type" />
-            <Label layoutX="14.0" layoutY="94.0" text="Date of Birth" />
-            <Button fx:id="moreInfoButton" layoutX="119.0" layoutY="136.0" mnemonicParsing="false" onAction="#moreInfoNeeded" prefHeight="25.0" prefWidth="96.0" text="Continue" />
-            <Label fx:id="openAccountPaneError" contentDisplay="CENTER" layoutX="-1.0" layoutY="163.0" prefHeight="51.0" prefWidth="334.0" textAlignment="CENTER" textFill="RED" />
+            <Label layoutX="118.0" layoutY="54.0" prefHeight="17.0" prefWidth="82.0" text="Account Type" />
+            <Label layoutX="14.0" layoutY="166.0" text="Date of Birth" />
+            <Button fx:id="moreInfoButton" layoutX="212.0" layoutY="198.0" mnemonicParsing="false" onAction="#moreInfoNeeded" prefHeight="25.0" prefWidth="96.0" text="Continue" />
+            <Label fx:id="openAccountPaneError" contentDisplay="CENTER" layoutY="230.0" prefHeight="51.0" prefWidth="334.0" textAlignment="CENTER" textFill="RED" />
+            <RadioButton fx:id="checkingButton" layoutX="28.0" layoutY="81.0" mnemonicParsing="false" onAction="#selectedAccountType" prefHeight="17.0" prefWidth="131.0" text="Checking" />
+            <RadioButton fx:id="collegeCheckingButton" layoutX="189.0" layoutY="81.0" mnemonicParsing="false" onAction="#selectedAccountType" prefHeight="17.0" prefWidth="131.0" text="College Checking" />
+            <RadioButton fx:id="savingsButton" layoutX="28.0" layoutY="127.0" mnemonicParsing="false" onAction="#selectedAccountType" prefHeight="17.0" prefWidth="131.0" text="Savings" />
+            <Button fx:id="actionPaneBackButton" layoutX="14.0" layoutY="198.0" mnemonicParsing="false" onAction="#actionPaneBackButton" prefHeight="25.0" prefWidth="96.0" text="Back" />
+            <RadioButton fx:id="moneyMarketButton" layoutX="189.0" layoutY="127.0" mnemonicParsing="false" onAction="#selectedAccountType" prefHeight="17.0" prefWidth="131.0" text="Money Market" />
          </children>
       </Pane>
       <Pane fx:id="moreInfoPane" focusTraversable="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
          <children>
-            <TextField fx:id="campusCodeField" layoutX="98.0" layoutY="80.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: &quot;1&quot;, &quot;2&quot;, or &quot;3&quot;" />
-            <Label layoutX="14.0" layoutY="86.0" prefHeight="17.0" prefWidth="82.0" text="Campus Code" />
+            <TextField fx:id="validORcampusCodeField" layoutX="108.0" layoutY="82.0" prefHeight="25.0" prefWidth="210.0" promptText="Ex: &quot;1&quot;, &quot;2&quot;, or &quot;3&quot;" />
+            <Label fx:id="validOrCampusCodeLabel" layoutX="14.0" layoutY="86.0" prefHeight="17.0" prefWidth="82.0" text="Campus Code" />
             <Label layoutX="14.0" layoutY="44.0" text="Initial Balance" />
-            <TextField fx:id="balanceField" layoutX="98.0" layoutY="40.0" prefHeight="25.0" prefWidth="210.0" promptText="Non-Negative Numbers Only" />
+            <TextField fx:id="balanceField" layoutX="108.0" layoutY="40.0" prefHeight="25.0" prefWidth="210.0" promptText="Non-Negative Numbers Only" />
             <Label layoutX="117.0" layoutY="14.0" prefHeight="17.0" prefWidth="96.0" text="More Information" />
+            <Button fx:id="moreInfoButton1" layoutX="213.0" layoutY="136.0" mnemonicParsing="false" onAction="#doAction" prefHeight="25.0" prefWidth="96.0" text="Continue" />
+            <Label fx:id="openAccountPaneError1" contentDisplay="CENTER" layoutY="161.0" prefHeight="51.0" prefWidth="329.0" textAlignment="CENTER" textFill="RED" />
+            <Button fx:id="moreInfoBackButton" layoutX="14.0" layoutY="136.0" mnemonicParsing="false" onAction="#backButton" prefHeight="25.0" prefWidth="96.0" text="Back" />
+            <Label fx:id="openAccountPaneError2" contentDisplay="CENTER" layoutX="-2.0" layoutY="177.0" prefHeight="51.0" prefWidth="334.0" textAlignment="CENTER" textFill="RED" />
          </children>
       </Pane>
    </children>

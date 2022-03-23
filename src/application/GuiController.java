@@ -21,15 +21,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
-public class SampleController extends Application implements Initializable{
+public class GuiController extends Application implements Initializable{
 	@FXML
 	private Stage primaryStage;
 	@FXML
@@ -39,27 +38,24 @@ public class SampleController extends Application implements Initializable{
 	@FXML
 	private Pane actionPane,basicInfoPane , moreInfoPane;
 	@FXML
-	private Label openAccountPaneError,openAccountPaneError2, validOrCampusCodeLabel;
+	private Label validOrCampusCodeLabel,moneyLabel;
 	@FXML
-	private Button selectButton, moreInfoButton, moreInfoBackButton, actionPaneBackButton;
+	private Button selectButton, moreInfoButton, finalButton, moreInfoBackButton, actionPaneBackButton;
 	@FXML
 	private RadioButton checkingButton, collegeCheckingButton, savingsButton, moneyMarketButton;
 	@FXML
 	private TextField nameField, dobField, balanceField, validORcampusCodeField;
-	
-	private String accountType;
-	private String name;
+	@FXML
+	private TextArea printArea,openAccountPaneError,openAccountPaneError2,goodMessage;
+	private String accountType, name;
 	private Date dateOfBirth;
 	private Profile accountProfile;
 	private double initialBalance;
-	private int campusCode;
-	private int isLoyal;
+	private int campusCode, isLoyal;
+	
 	private final String[] commandOptions = {"Open Account", "Close Account", "Deposit Money", "Withdraw Money",
-			"Display Database", "Display Database by account type", "Display accounts with fees and montly interst", "Quit"};
-	private final String CHECKING = "C";
-	private final String COLLEGE_CHECKING = "CC";
-	private final String SAVINGS = "S";
-	private final String MONEY_MARKET = "MM";
+			"Display Database", "Display Database by account type", "Display accounts with fees and montly interst","Update Balances", "Quit"};
+	private final String CHECKING = "C", COLLEGE_CHECKING = "CC", SAVINGS = "S", MONEY_MARKET = "MM";
 	private AccountDatabase mainDatabase;
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -67,8 +63,10 @@ public class SampleController extends Application implements Initializable{
 		selectChoiceBox.getItems().addAll(commandOptions);
 		basicInfoPane.setVisible(false);
 		moreInfoPane.setVisible(false);
-		this.selectButton = new Button();
 		selectButton.setVisible(true);
+		goodMessage.setStyle("-fx-text-fill: green ;");
+		openAccountPaneError.setStyle("-fx-text-fill: red ;");
+		openAccountPaneError2.setStyle("-fx-text-fill: red ;");
 		ToggleGroup tg = new ToggleGroup();
 		this.checkingButton.setToggleGroup(tg);
 		this.collegeCheckingButton.setToggleGroup(tg);
@@ -76,6 +74,7 @@ public class SampleController extends Application implements Initializable{
 		this.moneyMarketButton.setToggleGroup(tg);
 	}
 	public void doAction(ActionEvent event) {
+		Account tempAccount;
 		String choice = selectChoiceBox.getValue();
 		if(this.checkBalance() == -1 || this.checkcampusCode() == -1 || this.checkLoyal() == -1) {
 			return;
@@ -83,25 +82,91 @@ public class SampleController extends Application implements Initializable{
 		this.openAccountPaneError2.setText("");
 		switch (choice) {
 			case "Open Account":
-				System.out.println("Time to Open Account!");
-				this.mainDatabase.open(this.openAccountCommand(this.accountType, this.accountProfile, this.initialBalance, this.campusCode,this.isLoyal));
-				this.mainDatabase.print();
+				Account temp  = this.openAccountCommand(this.accountType, this.accountProfile, this.initialBalance, this.campusCode,this.isLoyal);
+				if(temp == null) {
+					return;
+				}else {
+					this.mainDatabase.open(this.openAccountCommand(this.accountType, this.accountProfile, this.initialBalance, this.campusCode,this.isLoyal));
+				}
 				break;
 			case "Close Account":
-				System.out.println("Time to Close Account!");
+				tempAccount = this.closeAccountCommand(this.accountType, this.accountProfile);
+				if(tempAccount == null) {
+					return;
+				}
+				if(this.mainDatabase.getAccount(tempAccount) == null) {
+					this.openAccountPaneError2.setText("ERROR " + tempAccount.getHolder().toString() + " " + tempAccount.getType() + " is not in the database.");
+				}
+				if(!this.mainDatabase.close(tempAccount)) {
+					this.openAccountPaneError2.setText("ERROR Account is closed already.");
+				}else {
+					this.goodMessage.setText("Account closed.");
+				}
 				break;
 			case "Deposit Money":
-				System.out.println("Time to Deposit Money!");
+				tempAccount = this.manipluateMoney(this.accountType, this.accountProfile, this.initialBalance);
+				if(tempAccount == null) {
+					this.openAccountPaneError2.setText("ERROR Depositing into account.");
+					return;
+				}
+				if(this.mainDatabase.getAccount(tempAccount) == null) {
+					this.openAccountPaneError2.setText("ERROR " + tempAccount.getHolder().toString() + " " + tempAccount.getType() + " is not in the database.");
+					return;
+				}
+				this.mainDatabase.deposit(tempAccount);
+				this.goodMessage.setText("Deposit - balance updated.");
 				break;
 			case "Withdraw Money":
-				System.out.println("Time to Withdrawl Money!");
-				break;
-			case "Quit":
-				this.quit();
-				break;
-			default:
+				tempAccount = this.manipluateMoney(accountType,  this.accountProfile,  this.initialBalance);
+				if(tempAccount == null) {
+					this.openAccountPaneError2.setText("ERROR Withdraing from account.");
+					return;
+				}
+				if(this.mainDatabase.getAccount(tempAccount) == null) {
+					this.openAccountPaneError2.setText("ERROR " + tempAccount.getHolder().toString() + " " + tempAccount.getType() + " is not in the database.");
+					return;
+				}
+				if(this.mainDatabase.withdraw(tempAccount)) {
+					this.goodMessage.setText("Withdraw - balance updated.");
+					break;
+				}else {
+					this.openAccountPaneError2.setText("ERROR Withdraw - insufficient fund.");
+					return;
+				}
+		default:
 				break;
 		}
+		resetToDefault();
+		
+	}
+	
+	/**
+	 Manipulates money from a specific account with a specific profile and account type.
+	 @param accountType The type of account to be manipulated from (savings, checking, etc.)
+	        profile The identifications of the person using the account (fname, lname, dob)
+	        balance The amount of money to to add or subtract from the account.
+	 @return null if the balance was invalid or missing in the command or if the account type was invalid.
+	 		 The new account created to find and manipulate from otherwise.
+	 */
+	private Account manipluateMoney(String accountType, Profile profile, double balance) {
+		Account tempAccount = null;
+		switch(accountType) {
+		case "C":
+			tempAccount = new Checking(profile,balance);
+			break;
+		case "CC":
+			tempAccount = new CollegeChecking(profile,balance,-1);
+			break;
+		case "MM":
+			tempAccount = new MoneyMarket(profile,balance);
+			break;
+		case "S":
+			tempAccount =  new Savings(profile,balance,false);
+			break;
+		default:
+			return tempAccount;
+		}
+		return tempAccount;	
 	}
 	
 	/**
@@ -110,7 +175,6 @@ public class SampleController extends Application implements Initializable{
 	        profile The identifications of a person (fname, lname, dob)
 	 	    balance The amount to deposit into the new account.
 	 		code The campus code for a college checking account, if applicable and necessary.
-	 		paramSize The number of parameters in the given line.
 	 @return The account created based on the accountType given if there are no problems.
 	 		 null otherwise (a problem was encountered in making the account)
 	 */
@@ -141,28 +205,24 @@ public class SampleController extends Application implements Initializable{
 	private Account checkingAccount(Profile profile, double balance) {
 		Checking newAcc = new Checking(profile,balance);
 		if(this.mainDatabase.getAccount(newAcc) == null && this.mainDatabase.checkDupChecking(newAcc) == -1) {
-			this.openAccountPaneError2.setTextFill(Color.GREEN);
-			this.openAccountPaneError2.setText("Account opened.");
+			this.goodMessage.setText("Account opened.");
 			return newAcc;
 		}else {
 			Account acct = this.mainDatabase.getAccount(newAcc);
 			if(acct == null && this.mainDatabase.checkDupChecking(newAcc) != -1) {
-				this.openAccountPaneError2.setTextFill(Color.RED);
-				this.openAccountPaneError2.setText(profile.toString() + " same account(type) is in the database.");
+				this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
 				return null;
 			}
 			if(this.mainDatabase.getAccount(newAcc).isClosed()) {
 				this.mainDatabase.reopen(newAcc);
-				this.openAccountPaneError2.setTextFill(Color.GREEN);
-				this.openAccountPaneError2.setText("Account reopened.");
+				this.goodMessage.setText("Account reopened.");
 				return null;
 			}
+			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
 			return null;
-			
 		}
 	
 	}
-
 	/**
 	 Opens a college checking account given a profile, starting balance, and a campus code.
 	 @param profile The identifications of a person using the account (fname, lname, dob)
@@ -175,28 +235,23 @@ public class SampleController extends Application implements Initializable{
 	private Account collageCheckingAccount(Profile profile, double balance, int code) {
 		CollegeChecking newAcc = new CollegeChecking(profile,balance,code);
 		if(this.mainDatabase.checkDupChecking(newAcc) == -1) {
-			this.openAccountPaneError2.setTextFill(Color.GREEN);
-			this.openAccountPaneError2.setText("Account opened.");
+			this.goodMessage.setText("Account opened.");
 			return newAcc;
 		}else {
 			Account acct = this.mainDatabase.getAccount(newAcc);
 			if(acct == null ||this.mainDatabase.checkDupChecking(newAcc) == -1) {
-				this.openAccountPaneError2.setTextFill(Color.RED);
-				this.openAccountPaneError2.setText(profile.toString() + " same account(type) is in the database.");
+				this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
 				return null;
 			}
 			if(acct.isClosed()) {
 				this.mainDatabase.reopen(newAcc);
-				this.openAccountPaneError2.setTextFill(Color.GREEN);
-				this.openAccountPaneError2.setText("Account reopened.");
+				this.goodMessage.setText("Account reopened.");
 				return null;
 			}
-			this.openAccountPaneError2.setTextFill(Color.RED);
-			this.openAccountPaneError2.setText(profile.toString() + " same account(type) is in the database.");
+			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
 			return null;
 		}
 	}
-	
 	/**
 	 Opens a savings account given a profile, starting balance, and loyalty code.
 	 @param profile The identifications of a person using the account (fname, lname, dob)
@@ -209,22 +264,18 @@ public class SampleController extends Application implements Initializable{
 	private Account savingsAccount(Profile profile, double balance, int code) {
 		Savings newAcc = new Savings(profile,balance,(code == 1?true:false));
 		if(this.mainDatabase.getAccount(newAcc) == null) {
-			this.openAccountPaneError2.setTextFill(Color.GREEN);
-			this.openAccountPaneError2.setText("Account opened.");
+			this.goodMessage.setText("Account opened.");
 			return newAcc;
 		}else {
 			if(this.mainDatabase.getAccount(newAcc).isClosed()) {
 				this.mainDatabase.reopen(newAcc);
-				this.openAccountPaneError2.setTextFill(Color.GREEN);
-				this.openAccountPaneError2.setText("Account reopened.");
+				this.goodMessage.setText("Account reopened.");
 				return null;
 			}
-			this.openAccountPaneError2.setTextFill(Color.RED);
-			this.openAccountPaneError2.setText(profile.toString() + " same account(type) is in the database.");
+			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
 			return null;
 		}		
 	}
-	
 	/**
 	 Opens a money market account given a profile and a starting balance.
 	 @param profile The identifications of a person using the account (fname, lname, dob)
@@ -236,32 +287,126 @@ public class SampleController extends Application implements Initializable{
 	private Account moneyMarketAccount(Profile profile, double balance) {
 		MoneyMarket newAcc = new MoneyMarket(profile,balance);
 		if(this.mainDatabase.getAccount(newAcc) == null) {
-			this.openAccountPaneError2.setTextFill(Color.GREEN);
-			this.openAccountPaneError2.setText("Account opened.");
+			this.goodMessage.setText("Account opened.");
 			return newAcc;
 		}else {
 			if(this.mainDatabase.getAccount(newAcc).isClosed()) {
 				this.mainDatabase.reopen(newAcc);
-				this.openAccountPaneError2.setTextFill(Color.GREEN);
-				this.openAccountPaneError2.setText("Account reopened.");
+				this.goodMessage.setText("Account reopened.");
 				return null;
 			}
-			this.openAccountPaneError2.setTextFill(Color.RED);
-			this.openAccountPaneError2.setText(profile.toString() + " same account(type) is in the database.");
+			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
 			return null;
 		}		
 		
 	}
 	
+	/**
+	 Attempts to close an account based on the type to be closed and the person holding the account.
+	 @param accountType The type of account to be closed.
+	        profile The identifications of a person using the account (fname, lname, dob)
+	 @return The account that was closed, null otherwise.
+	 */
+	private Account closeAccountCommand(String accountType, Profile profile) {
+		switch(accountType) {
+			case CHECKING:
+				return this.closeCheckingAccount(profile);
+			case COLLEGE_CHECKING:
+				return this.closeCollegeCheckingAccount(profile);
+			case MONEY_MARKET:
+				return this.closeMoneyMarketAccount(profile);
+			case SAVINGS:
+				return this.closeSavingsAccount(profile);
+			default:
+				return null;
+				
+		}
+	}
+	/**
+	 Closes a checking account given a profile.
+	 @param profile The identifications of the person using the account (fname, lname, dob)
+	 @return null if the account was not found in the database
+	 		 The newly created account to find and close otherwise.
+	 */
+	private Account closeCheckingAccount(Profile profile) {
+		Checking acct = (Checking)(this.mainDatabase.getAccount(new Checking(profile,-1)));
+		return acct;
+	}
+	/**
+	 Closes a college checking account given a profile.
+	 @param profile The identifications of the person using the account (fname, lname, dob)
+	 @return null if the account was not found in the database
+	 		 The newly created account to find and close otherwise.
+	 */
+	private Account closeCollegeCheckingAccount(Profile profile) {
+		CollegeChecking acct = (CollegeChecking)(this.mainDatabase.getAccount(new CollegeChecking(profile,-1,-1)));
+		return acct;
+	}
+	/**
+	 Closes a money market account given a profile.
+	 @param profile The identifications of the person using the account (fname, lname, dob)
+	 @return null if the account was not found in the database
+	 		 The newly created account to find and close otherwise.
+	 */
+	private Account closeMoneyMarketAccount(Profile profile) {
+		MoneyMarket acct = (MoneyMarket)(this.mainDatabase.getAccount(new MoneyMarket(profile,-1)));
+		return acct;
+	}
 	
+	/**
+	 Closes a savings account given a profile.
+	 @param profile The identifications of the person using the account (fname, lname, dob)
+	 @return null if the account was not found in the database
+	 		 The newly created account to find and close otherwise.
+	 */
+	private Account closeSavingsAccount(Profile profile) {
+		Savings acct = (Savings)(this.mainDatabase.getAccount(new Savings(profile,-1,false)));
+		return acct;
+	}
 	
-	
-	
+	private void resetToDefault() {
+		clearAllFields();
+		hideAllPanes();
+		this.actionPane.setDisable(false);
+		this.moreInfoPane.setDisable(false);
+		this.basicInfoPane.setDisable(false);
+		this.moreInfoButton.setVisible(true);
+		this.finalButton.setVisible(true);
+		this.moreInfoBackButton.setVisible(true);
+		this.actionPaneBackButton.setVisible(true);
+	}
+	private void clearAllFields() {
+		this.nameField.clear();
+		this.name = "";
+		this.checkingButton.setSelected(false);
+		this.collegeCheckingButton.setSelected(false);
+		this.savingsButton.setSelected(false);
+		this.moneyMarketButton.setSelected(false);
+		this.accountType = "";
+		this.dobField.clear();
+		this.dateOfBirth = null;
+		this.balanceField.clear();
+		this.initialBalance = -1;
+		this.validORcampusCodeField.clear();
+		this.isLoyal = -1;
+		this.campusCode = -1;
+	}
+	private void hideAllPanes() {
+		this.moreInfoPane.setVisible(false);
+		this.basicInfoPane.setVisible(false);
+	}
 	private int checkBalance() {
+		String choice = selectChoiceBox.getValue();
+		if(!this.moreInfoPane.isVisible()) {
+			return 0;
+		}
 		try {
 			this.initialBalance = Double.parseDouble(this.balanceField.getText());
 			if(this.initialBalance <= 0) {
-				this.openAccountPaneError2.setText("Initial deposit cannot be 0 or negative.");
+				if(choice.equals("Open Account"))
+					this.openAccountPaneError2.setText("Initial deposit cannot be 0 or negative.");
+				else
+					this.openAccountPaneError2.setText("Deposit - amount cannot be 0 or negative.");
 				return -1;
 			}
 			if(this.accountType.equals(MONEY_MARKET)) {
@@ -271,13 +416,20 @@ public class SampleController extends Application implements Initializable{
 				}
 			}
 		}catch(NumberFormatException e) {
-			this.openAccountPaneError2.setText("ERROR: Initial deposit entry is not a valid amount.");
+			if(choice.equals("Open Account"))
+				this.openAccountPaneError2.setText("ERROR: Initial deposit entry is not a valid amount.");
+			else
+				this.openAccountPaneError2.setText("ERROR: Deposit entry is not a valid amount.");
 			return -1;
 		}
 		
 		return 0;
 	}
+	
 	private int checkcampusCode() {
+		if(!this.moreInfoPane.isVisible() || !this.validORcampusCodeField.isVisible()) {
+			return 0;
+		}
 		if(!this.accountType.equals(COLLEGE_CHECKING)) {
 			return 0;
 		}
@@ -294,6 +446,9 @@ public class SampleController extends Application implements Initializable{
 		return 0;
 	}
 	private int checkLoyal() {
+		if(!this.moreInfoPane.isVisible() || !this.validORcampusCodeField.isVisible()) {
+			return 0;
+		}
 		if(!this.accountType.equals(SAVINGS)) {
 			return 0;
 		}
@@ -311,22 +466,57 @@ public class SampleController extends Application implements Initializable{
 	}
 	public void getInfo(ActionEvent event) {
 		String choice = selectChoiceBox.getValue();
+		this.goodMessage.setText("");
+		goodMessage.setStyle("-fx-text-fill: green ;");
+		if(choice == null) {
+			goodMessage.setStyle("-fx-text-fill: orange ;");
+			this.goodMessage.setText("Please Select an Action");
+			return;
+		}
 		switch (choice) {
 			case "Open Account":
-				basicInfoPane.setVisible(true);
-				
-				System.out.println(choice);
+				this.actionPane.setDisable(true);
+				this.basicInfoPane.setVisible(true);
+				break;
+			case "Close Account":
+				this.actionPane.setDisable(true);
+				this.basicInfoPane.setVisible(true);
+				break;
+			case "Deposit Money":
+				this.actionPane.setDisable(true);
+				this.basicInfoPane.setVisible(true);
+				break;
+			case "Withdraw Money":
+				this.actionPane.setDisable(true);
+				this.basicInfoPane.setVisible(true);
+				break;
+			case "Display Database":
+				this.printArea.clear();
+				this.printArea.setText(this.mainDatabase.print());
+				break;
+			case "Display Database by account type":
+				this.printArea.clear();
+				this.printArea.setText(this.mainDatabase.printByAccountType());
+				break;
+			case "Display accounts with fees and montly interst":
+				this.printArea.clear();
+				this.printArea.setText(this.mainDatabase.printFeeAndInterest());
+				break;
+			case "Update Balances":
+				this.printArea.clear();
+				this.printArea.setText(this.mainDatabase.updateDatabase());
 				break;
 			case "Quit":
 				this.quit();
 				break;
 			default:
+				
 				break;
 		}
 		
 	}
 	public void selectedAccountType(ActionEvent event) {
-		System.out.println("New Account Selected");
+
 		if(this.checkingButton.isSelected()) {
 			this.accountType = CHECKING;
 		}else if(this.collegeCheckingButton.isSelected()) {
@@ -338,19 +528,30 @@ public class SampleController extends Application implements Initializable{
 		}
 	}
 	public void moreInfoNeeded(ActionEvent event) {
-		if(populateProfile() == 0) {
+		String choice = selectChoiceBox.getValue();
+		if(populateProfile() == 0 ) {
+			if(choice.equals("Close Account") || choice.equals("Display Database") || choice.equals("Display Database by account type") 
+					|| choice.equals("Display accounts with fees and montly interst")) {
+				doAction(event);
+				return;
+			}
 			this.setMoreInfoVisable();
 			this.moreInfoButton.setVisible(false);
+			this.actionPaneBackButton.setVisible(false);
 			this.basicInfoPane.setDisable(true);
+			
 		}
 	}
 	public void backButton(ActionEvent event) {
 		//Re-enables the first info pane
 		this.moreInfoButton.setVisible(true);
+		this.actionPaneBackButton.setVisible(true);
 		this.basicInfoPane.setDisable(false);
+		
 		
 		//Hides the More Info Pane
 		this.moreInfoPane.setVisible(false);
+		this.openAccountPaneError2.setText("");
 	}
 	public void actionPaneBackButton(ActionEvent event) {
 		//Re-enables the first info pane
@@ -358,6 +559,7 @@ public class SampleController extends Application implements Initializable{
 		
 		//Hides the Basic Info Pane
 		this.basicInfoPane.setVisible(false);
+		this.openAccountPaneError.setText("");
 	}
 	public void quit() {
 		this.primaryStage = (Stage)this.mainPane.getScene().getWindow();
@@ -396,22 +598,27 @@ public class SampleController extends Application implements Initializable{
 	    return true;
 	}
 	private void setMoreInfoVisable() {
-		System.out.println("Account Type: " + this.accountType);
 		
-		if(this.accountType.equals(COLLEGE_CHECKING)) {
+		String choice = selectChoiceBox.getValue();
+		if(this.accountType.equals(COLLEGE_CHECKING) && choice.equals("Open Account")) {
 			this.validOrCampusCodeLabel.setText("Campus Code");
+			this.moneyLabel.setText("Initial Balance");
 			this.validORcampusCodeField.setPromptText("Ex: \"1\", \"2\", or \"3\"");
 			this.validOrCampusCodeLabel.setVisible(true);
 			this.validORcampusCodeField.setVisible(true);
-		}else if(this.accountType.equals(SAVINGS)) {
+		}else if(this.accountType.equals(SAVINGS) && choice.equals("Open Account")) {
 			this.validOrCampusCodeLabel.setText("Loyal Customer");
+			this.moneyLabel.setText("Initial Balance");
 			this.validORcampusCodeField.setPromptText("Ex: \"0\", or \"1\"");
 			this.validOrCampusCodeLabel.setVisible(true);
 			this.validORcampusCodeField.setVisible(true);
 		}else {
+			if(!choice.equals("Open Account"))
+				this.moneyLabel.setText("Amount");
 			this.validOrCampusCodeLabel.setVisible(false);
 			this.validORcampusCodeField.setVisible(false);
 		}
+		
 		this.moreInfoPane.setVisible(true);
 		
 	}
@@ -419,18 +626,15 @@ public class SampleController extends Application implements Initializable{
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		try {
-			this.mainPane = FXMLLoader.load(getClass().getResource("Sample.fxml"));
+			this.mainPane = FXMLLoader.load(getClass().getResource("guiFormat.fxml"));
 			Scene scene = new Scene(mainPane,980,650);
 			this.primaryStage.setScene(scene);
+			this.primaryStage.setTitle("Bank Teller");
 			this.primaryStage.show();
 			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} catch(Exception e) {}
 	}
-	public static void main(String[] args) {
-		launch(args);
-	}
+	
 		
 	
 	

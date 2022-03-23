@@ -150,6 +150,10 @@ public class Date implements Comparable<Date> {
 			this.month = -1;
 			this.day  = -1;
 			this.year = -1;
+		}catch(ArrayIndexOutOfBoundsException e) {
+			this.month = -1;
+			this.day  = -1;
+			this.year = -1;
 		}
 		
 		

@@ -49,7 +49,6 @@ public class AccountDatabase {
 	 */
 	public Account getAccount(Account account) { //return the index, or NOT_FOUND
 		for(int i = 0; i < this.numAcct; i++) {
-			//System.out.println("Person 1: " + this.accounts[i].toString() + " \tPerson 2: " + account.toString());
 			if(this.accounts[i].equals(account)) {
 				return this.accounts[i];
 			}
@@ -73,6 +72,9 @@ public class AccountDatabase {
 					return i;
 				}
 				if(this.accounts[i] instanceof CollegeChecking && account instanceof Checking) {
+					return i;
+				}
+				if(this.accounts[i] instanceof Checking && account instanceof Checking) {
 					return i;
 				}	
 			}	
@@ -186,83 +188,88 @@ public class AccountDatabase {
 	/**
 	 Prints the accounts in the database in the current order.
 	 */
-	public void print() {
+	public String print() {
+		String returnString = "";
 		if(this.numAcct == 0) {
-			System.out.println("Account Database is empty!");
-			return;
+			returnString += ("Account Database is empty!");
+			return returnString;
 		}
 
-		System.out.println("\n*list of accounts in the database*");
+		returnString += ("*list of accounts in the database*\n");
 		for(int i = 0; i < this.numAcct; i++) {
-			System.out.println(this.accounts[i].toString());
+			returnString += (this.accounts[i].toString()) + "\n";
 		}
-		System.out.println("*end of list*" + "\n");
+		returnString += ("*end of list*" + "\n");
+		return returnString;
 	}
 	
 	/**
 	 Prints the accounts in this database sorted by their account type.
 	 */
-	public void printByAccountType() {
-		
+	public String printByAccountType() {
+		String returnString = "";
 		if(this.numAcct == 0) {
-			System.out.println("Account Database is empty!");
-			return;
+			returnString += ("Account Database is empty!\n");
+			return returnString;
 		}
-		System.out.println("\n*list of accounts by account type.");
+		returnString += ("*list of accounts by account type.\n");
 		for(int i = 0; i < this.numAcct; i++) {
 			if(this.accounts[i].getType().equals("Checking")) {
-				System.out.println(this.accounts[i].toString());
+				returnString += (this.accounts[i].toString()) + "\n";
 			}
 		}
 		for(int i = 0; i < this.numAcct; i++) {
 			if(this.accounts[i].getType().equals("College Checking")) {
-				System.out.println(this.accounts[i].toString());
+				returnString += (this.accounts[i].toString()) + "\n";
 			}		
 		}
 		
 		for(int i = 0; i < this.numAcct; i++) {
 			if(this.accounts[i].getType().equals("Money Market Savings")) {
-				System.out.println(this.accounts[i].toString());
+				returnString += (this.accounts[i].toString()) + "\n";
 			}
 		}
 		
 		for(int i = 0; i < this.numAcct; i++) {
 			if(this.accounts[i].getType().equals("Savings")) {
-				System.out.println(this.accounts[i].toString());
+				returnString += (this.accounts[i].toString()) + "\n";
 			}		
 		}
-		System.out.println("*end of list." + "\n");
-		
+		returnString += ("*end of list.\n");
+		return returnString;
 	}
 	
 	/**
 	 Prints the accounts and shows the fees and monthly interest of each account.
 	 */
-	public void printFeeAndInterest() { 
+	public String printFeeAndInterest() { 
+		String returnString = "";
 		if(this.numAcct == 0) {
-			System.out.println("Account Database is empty!");
-			return;
+			returnString += ("Account Database is empty!");
+			return returnString;
 		}
-		System.out.println("\n*list of accounts with fee and monthly interest");
+		returnString += ("*list of accounts with fee and monthly interest\n");
 		DecimalFormat numberFormat = new DecimalFormat("#,##0.00");
 		double fee;
 		double montlyInterst;
 		for(int i = 0; i < this.numAcct; i++) {
 			fee = this.accounts[i].fee();
 			montlyInterst = ( (this.accounts[i].getBalance() * (this.accounts[i].monthlyInterest())));
-			System.out.println(this.accounts[i].toString() + "::fee $" + numberFormat.format(fee) + "::monthly interest $" + numberFormat.format(montlyInterst));
+			returnString += (this.accounts[i].toString() + "::fee $" + numberFormat.format(fee) + "::monthly interest $" + numberFormat.format(montlyInterst) + "\n");
 		}
+		return returnString;
 	}
 	
 	/**
 	 Updates the balance of each account and prints out the account's updated information.
 	 */
-	public void updateDatabase() {
+	public String updateDatabase() {
+		String returnString = "";
 		if(this.numAcct == 0) {
-			System.out.println("Account Database is empty!");
-			return;
+			returnString += ("Account Database is empty!");
+			return returnString;
 		}
-		System.out.println("\n*list of accounts with updated balance");
+		returnString += ("*list of accounts with updated balance\n");
 		double fee;
 		double montlyInterst;
 		for(int i = 0; i < this.numAcct; i++) {
@@ -270,7 +277,8 @@ public class AccountDatabase {
 			montlyInterst = ( (this.accounts[i].getBalance() * (this.accounts[i].monthlyInterest())));
 			this.accounts[i].balance+=montlyInterst;
 			this.accounts[i].balance-=fee;
-			System.out.println(this.accounts[i].toString());
+			returnString += (this.accounts[i].toString()) + "\n";
 		}
+		return returnString;
 	}
 }

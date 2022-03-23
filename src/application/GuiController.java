@@ -607,7 +607,7 @@ public class GuiController extends Application implements Initializable{
 		if(this.accountType.equals(COLLEGE_CHECKING) && choice.equals("Open Account")) {
 			this.validOrCampusCodeLabel.setText("Campus Code");
 			this.moneyLabel.setText("Initial Balance");
-			this.validORcampusCodeField.setPromptText("Ex: \"1\", \"2\", or \"3\"");
+			this.validORcampusCodeField.setPromptText("Ex: \"0\", \"1\", or \"2\"");
 			this.validOrCampusCodeLabel.setVisible(true);
 			this.validORcampusCodeField.setVisible(true);
 		}else if(this.accountType.equals(SAVINGS) && choice.equals("Open Account")) {

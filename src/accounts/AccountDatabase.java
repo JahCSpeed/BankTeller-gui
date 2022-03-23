@@ -77,6 +77,7 @@ public class AccountDatabase {
 				if(this.accounts[i] instanceof Checking && account instanceof Checking) {
 					return i;
 				}	
+				
 			}	
 		}
 		return -1;

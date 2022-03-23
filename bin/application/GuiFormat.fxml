@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="687.0" prefWidth="985.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GuiController">
@@ -26,7 +27,11 @@
    <children>
       <Pane fx:id="actionPane" prefHeight="200.0" prefWidth="200.0">
          <children>
-            <ChoiceBox fx:id="selectChoiceBox" layoutX="14.0" layoutY="60.0" prefHeight="33.0" prefWidth="177.0" />
+            <VBox layoutX="14.0" layoutY="60.0" prefHeight="33.0" prefWidth="177.0">
+               <children>
+                  <ChoiceBox fx:id="selectChoiceBox" prefHeight="33.0" prefWidth="177.0" />
+               </children>
+            </VBox>
             <Button fx:id="selectButton" layoutX="238.0" layoutY="64.0" mnemonicParsing="false" onAction="#getInfo" prefHeight="25.0" prefWidth="82.0" text="Select" />
             <TextArea fx:id="goodMessage" editable="false" layoutX="14.0" layoutY="100.0" prefHeight="65.0" prefWidth="305.0" />
          </children>

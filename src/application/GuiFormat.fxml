@@ -21,8 +21,7 @@
   </columnConstraints>
   <rowConstraints>
       <RowConstraints maxHeight="319.0" minHeight="10.0" prefHeight="314.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="399.0" minHeight="10.0" prefHeight="342.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="205.0" minHeight="0.0" prefHeight="31.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="399.0" minHeight="10.0" prefHeight="344.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <Pane fx:id="actionPane" prefHeight="200.0" prefWidth="200.0">
@@ -62,7 +61,7 @@
       </Pane>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
          <children>
-            <TextArea fx:id="printArea" disable="true" editable="false" layoutX="14.0" layoutY="45.0" prefHeight="362.0" prefWidth="953.0">
+            <TextArea fx:id="printArea" editable="false" layoutX="14.0" layoutY="45.0" prefHeight="313.0" prefWidth="953.0">
                <font>
                   <Font size="19.0" />
                </font></TextArea>

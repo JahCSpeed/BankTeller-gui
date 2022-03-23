@@ -216,6 +216,7 @@ public class GuiController extends Application implements Initializable{
 			if(this.mainDatabase.getAccount(newAcc).isClosed()) {
 				this.mainDatabase.reopen(newAcc);
 				this.goodMessage.setText("Account reopened.");
+				resetToDefault();
 				return null;
 			}
 			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
@@ -246,6 +247,7 @@ public class GuiController extends Application implements Initializable{
 			if(acct.isClosed()) {
 				this.mainDatabase.reopen(newAcc);
 				this.goodMessage.setText("Account reopened.");
+				resetToDefault();
 				return null;
 			}
 			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
@@ -270,6 +272,7 @@ public class GuiController extends Application implements Initializable{
 			if(this.mainDatabase.getAccount(newAcc).isClosed()) {
 				this.mainDatabase.reopen(newAcc);
 				this.goodMessage.setText("Account reopened.");
+				resetToDefault();
 				return null;
 			}
 			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
@@ -293,6 +296,7 @@ public class GuiController extends Application implements Initializable{
 			if(this.mainDatabase.getAccount(newAcc).isClosed()) {
 				this.mainDatabase.reopen(newAcc);
 				this.goodMessage.setText("Account reopened.");
+				resetToDefault();
 				return null;
 			}
 			this.openAccountPaneError2.setText("ERROR " + profile.toString() + " same account(type) is in the database.");
@@ -627,7 +631,7 @@ public class GuiController extends Application implements Initializable{
 		this.primaryStage = primaryStage;
 		try {
 			this.mainPane = FXMLLoader.load(getClass().getResource("guiFormat.fxml"));
-			Scene scene = new Scene(mainPane,980,650);
+			Scene scene = new Scene(mainPane,985,690);
 			this.primaryStage.setScene(scene);
 			this.primaryStage.setTitle("Bank Teller");
 			this.primaryStage.show();

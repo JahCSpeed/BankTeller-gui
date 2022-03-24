@@ -125,17 +125,25 @@ public class GuiController extends Application implements Initializable{
 					this.openAccountPaneError2.setText("ERROR " + tempAccount.getHolder().toString() + " " + tempAccount.getType() + " is not in the database.");
 					return;
 				}
+				if(this.mainDatabase.getAccount(tempAccount).isClosed()) {
+					this.openAccountPaneError2.setText("ERROR Can't deposit into closed account.");
+					return;
+				}
 				this.mainDatabase.deposit(tempAccount);
 				this.goodMessage.setText("Deposit - balance updated.");
 				break;
 			case "Withdraw Money":
 				tempAccount = this.manipluateMoney(accountType,  this.accountProfile,  this.initialBalance);
 				if(tempAccount == null) {
-					this.openAccountPaneError2.setText("ERROR Withdraing from account.");
+					this.openAccountPaneError2.setText("ERROR withdrawing from account.");
 					return;
 				}
 				if(this.mainDatabase.getAccount(tempAccount) == null) {
 					this.openAccountPaneError2.setText("ERROR " + tempAccount.getHolder().toString() + " " + tempAccount.getType() + " is not in the database.");
+					return;
+				}
+				if(this.mainDatabase.getAccount(tempAccount).isClosed()) {
+					this.openAccountPaneError2.setText("ERROR Can't withdraw from closed account.");
 					return;
 				}
 				if(this.mainDatabase.withdraw(tempAccount)) {
@@ -176,7 +184,7 @@ public class GuiController extends Application implements Initializable{
 			tempAccount =  new Savings(profile,balance,false);
 			break;
 		default:
-			return tempAccount;
+			break;
 		}
 		return tempAccount;	
 	}

@@ -28,6 +28,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+/**
+ 
+ @author Jah C. Speed, Abe Vitangcol
+ */
 public class GuiController extends Application implements Initializable{
 	@FXML
 	private Stage primaryStage;
@@ -57,6 +61,10 @@ public class GuiController extends Application implements Initializable{
 			"Display Database", "Display Database by account type", "Display accounts with fees and montly interst","Update Balances", "Quit"};
 	private final String CHECKING = "C", COLLEGE_CHECKING = "CC", SAVINGS = "S", MONEY_MARKET = "MM";
 	private AccountDatabase mainDatabase;
+	
+	/**
+	 
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		this.mainDatabase = new AccountDatabase();
@@ -73,6 +81,11 @@ public class GuiController extends Application implements Initializable{
 		this.savingsButton.setToggleGroup(tg);
 		this.moneyMarketButton.setToggleGroup(tg);
 	}
+	
+	/**
+	 
+	 @param event
+	 */
 	public void doAction(ActionEvent event) {
 		Account tempAccount;
 		String choice = selectChoiceBox.getValue();
@@ -194,6 +207,7 @@ public class GuiController extends Application implements Initializable{
 		}
 		
 	}
+	
 	/**
 	 Opens a checking account given a starting balance and a profile of the person using it.
 	 @param profile The identifications of a person (fname, lname, dob)
@@ -224,6 +238,7 @@ public class GuiController extends Application implements Initializable{
 		}
 	
 	}
+	
 	/**
 	 Opens a college checking account given a profile, starting balance, and a campus code.
 	 @param profile The identifications of a person using the account (fname, lname, dob)
@@ -254,6 +269,7 @@ public class GuiController extends Application implements Initializable{
 			return null;
 		}
 	}
+	
 	/**
 	 Opens a savings account given a profile, starting balance, and loyalty code.
 	 @param profile The identifications of a person using the account (fname, lname, dob)
@@ -279,6 +295,7 @@ public class GuiController extends Application implements Initializable{
 			return null;
 		}		
 	}
+	
 	/**
 	 Opens a money market account given a profile and a starting balance.
 	 @param profile The identifications of a person using the account (fname, lname, dob)
@@ -368,6 +385,9 @@ public class GuiController extends Application implements Initializable{
 		return acct;
 	}
 	
+	/**
+	 
+	 */
 	private void resetToDefault() {
 		clearAllFields();
 		hideAllPanes();
@@ -379,6 +399,10 @@ public class GuiController extends Application implements Initializable{
 		this.moreInfoBackButton.setVisible(true);
 		this.actionPaneBackButton.setVisible(true);
 	}
+	
+	/**
+	 
+	 */
 	private void clearAllFields() {
 		this.nameField.clear();
 		this.name = "";
@@ -395,10 +419,19 @@ public class GuiController extends Application implements Initializable{
 		this.isLoyal = -1;
 		this.campusCode = -1;
 	}
+	
+	/**
+	 
+	 */
 	private void hideAllPanes() {
 		this.moreInfoPane.setVisible(false);
 		this.basicInfoPane.setVisible(false);
 	}
+	
+	/**
+	 
+	 @return
+	 */
 	private int checkBalance() {
 		String choice = selectChoiceBox.getValue();
 		if(!this.moreInfoPane.isVisible()) {
@@ -430,6 +463,10 @@ public class GuiController extends Application implements Initializable{
 		return 0;
 	}
 	
+	/**
+	 
+	 @return
+	 */
 	private int checkcampusCode() {
 		if(!this.moreInfoPane.isVisible() || !this.validORcampusCodeField.isVisible()) {
 			return 0;
@@ -449,6 +486,11 @@ public class GuiController extends Application implements Initializable{
 		}
 		return 0;
 	}
+	
+	/**
+	 
+	 @return
+	 */
 	private int checkLoyal() {
 		if(!this.moreInfoPane.isVisible() || !this.validORcampusCodeField.isVisible()) {
 			return 0;
@@ -468,6 +510,13 @@ public class GuiController extends Application implements Initializable{
 		}
 		return 0;
 	}
+	
+	/**
+	 Makes more fields visible based on the action done.
+	 Any non-print command will go onto step 2 of the GUI and see the fields to input
+	 their name, account type, and their date of birth.
+	 @param event A button click on Select after selecting which action to do.
+	 */
 	public void getInfo(ActionEvent event) {
 		String choice = selectChoiceBox.getValue();
 		this.goodMessage.setText("");
@@ -519,6 +568,11 @@ public class GuiController extends Application implements Initializable{
 		}
 		
 	}
+	
+	/**
+	 Sets the account type based on the button selected.
+	 @param event One of the four buttons clicked on to select.
+	 */
 	public void selectedAccountType(ActionEvent event) {
 
 		if(this.checkingButton.isSelected()) {
@@ -531,6 +585,13 @@ public class GuiController extends Application implements Initializable{
 			this.accountType = MONEY_MARKET;
 		}
 	}
+	
+	/**
+	 Decides whether more information is needed based on the option selected.
+	 Opening is one such action that requires more information. Any action requiring the
+	 balance text field will be one that needs more information.
+	 @param event A button click on the continue button.
+	 */
 	public void moreInfoNeeded(ActionEvent event) {
 		String choice = selectChoiceBox.getValue();
 		if(populateProfile() == 0 ) {
@@ -546,6 +607,11 @@ public class GuiController extends Application implements Initializable{
 			
 		}
 	}
+	
+	/**
+	 Goes back one step in terms of visuals, updating the user interface when the back button was clicked.
+	 @param event A button click on the back button.
+	 */
 	public void backButton(ActionEvent event) {
 		//Re-enables the first info pane
 		this.moreInfoButton.setVisible(true);
@@ -557,6 +623,11 @@ public class GuiController extends Application implements Initializable{
 		this.moreInfoPane.setVisible(false);
 		this.openAccountPaneError2.setText("");
 	}
+	
+	/**
+	 Goes back one step in terms of the actions able to do upon a button click.
+	 @param event A button click on the back button.
+	 */
 	public void actionPaneBackButton(ActionEvent event) {
 		//Re-enables the first info pane
 		this.actionPane.setDisable(false);
@@ -565,10 +636,22 @@ public class GuiController extends Application implements Initializable{
 		this.basicInfoPane.setVisible(false);
 		this.openAccountPaneError.setText("");
 	}
+	
+	/**
+	 Stops running the GUI upon hitting the quit option in the main window.
+	 */
 	public void quit() {
 		this.primaryStage = (Stage)this.mainPane.getScene().getWindow();
 		this.primaryStage.close();
 	}
+	
+	/**
+	 Creates a profile given the name and parameters given in the GUI.
+	 Capable of catching errors, such as missing name, missing account type, or invalid birthday.
+	 @return -1 if an invalid name is given, if an account type wasn't selected, or if the date of birth
+	 		    is invalid along with an appropriate error message.
+	 		 0 otherwise.
+	 */
 	private int populateProfile() {
 		this.name = this.nameField.getText();
 		String fname, lname;
@@ -595,12 +678,25 @@ public class GuiController extends Application implements Initializable{
 		this.openAccountPaneError.setText("");
 		return 0;
 	}
+	
+	/**
+	 Checks to see if an account type button was selected or not.
+	 Only when applicable, so for opening, closing, withdrawing, or depositing for the account.
+	 @return false if a button was not selected, true otherwise.
+	 */
 	private boolean isButtonSelected() {
 		if(!this.checkingButton.isSelected() && !this.collegeCheckingButton.isSelected() && !this.savingsButton.isSelected() && !this.moneyMarketButton.isSelected() ) {
 			return false;
 		}
 	    return true;
 	}
+	
+	/**
+	 Lets specific fields become visible to be entered to create an account.
+	 Deals with Campus Code and Loyal Customer values for college checking accounts and savings
+	 accounts, respectively, and hides these fields to make sure that information cannot be filled
+	 upon opening a regular account.
+	 */
 	private void setMoreInfoVisable() {
 		
 		String choice = selectChoiceBox.getValue();
@@ -626,6 +722,10 @@ public class GuiController extends Application implements Initializable{
 		this.moreInfoPane.setVisible(true);
 		
 	}
+	
+	/**
+	 Starts and creates the GUI for the Bank Teller, giving it a window area and a title.
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;

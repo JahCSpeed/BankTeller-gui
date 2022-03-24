@@ -11,6 +11,7 @@ public class GuiMain extends GuiController {
 	 Launches the gui upon calling this class.
 	 @param args The Virtual Machine Arguments, which includes JavaFX 17 or 18's library, needed
 	 			 to run the gui.
+	 			 (VM Arguments: --module-path "(Java 17 or 18 library location)" --add-modules javafx.controls,javafx.fxml)
 	 */
 	public static void main(String[] args) {
 		launch(args);

@@ -61,6 +61,7 @@ public class GuiController extends Application implements Initializable{
 			"Display Database", "Display Database by account type", "Display accounts with fees and montly interst","Update Balances", "Quit"};
 	private final String CHECKING = "C", COLLEGE_CHECKING = "CC", SAVINGS = "S", MONEY_MARKET = "MM";
 	private AccountDatabase mainDatabase;
+	private static final double MM_BALANCE_THRESHOLD = 2500;
 	
 	/**
 	 
@@ -393,7 +394,7 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
+	 Goes back to the
 	 */
 	private void resetToDefault() {
 		clearAllFields();
@@ -408,7 +409,8 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
+	 Clears all typable or selectable fields for the next set of actions.
+	 Not only are the fields cleared, but the variables are also set back to its original values of -1 or null.
 	 */
 	private void clearAllFields() {
 		this.nameField.clear();
@@ -428,7 +430,8 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
+	 Hides the panes for profile and account information as well as amount to put into the account.
+	 Used after completing an action to return to the action selection step of the GUI.
 	 */
 	private void hideAllPanes() {
 		this.moreInfoPane.setVisible(false);
@@ -436,8 +439,9 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
-	 @return
+	 Checks if the balance being deposited into an account is valid.
+	 An invalid amount is a 0 or negative amount, too little placed in a MoneyMarket account, or simply not a number.
+	 @return -1 if an invalid deposit amount was encountered (see above line), 0 otherwise.
 	 */
 	private int checkBalance() {
 		String choice = selectChoiceBox.getValue();
@@ -454,8 +458,8 @@ public class GuiController extends Application implements Initializable{
 				return -1;
 			}
 			if(this.accountType.equals(MONEY_MARKET)) {
-				if(this.initialBalance < 2500) {
-					this.openAccountPaneError2.setText("Minimum of $2500 to open a MoneyMarket account.");
+				if(this.initialBalance < MM_BALANCE_THRESHOLD) {
+					this.openAccountPaneError2.setText("Minimum of $" + MM_BALANCE_THRESHOLD + " to open a MoneyMarket account.");
 					return -1;
 				}
 			}
@@ -471,8 +475,9 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
-	 @return
+	 Checks to see if the loyal input boxes are visible and for the right action.
+	 Also capable of catching number format errors for incorrect campus codes.
+	 @return -1 if an invalid campus code was encountered, 0 otherwise.
 	 */
 	private int checkcampusCode() {
 		if(!this.moreInfoPane.isVisible() || !this.validORcampusCodeField.isVisible()) {
@@ -495,8 +500,9 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
-	 @return
+	 Checks to see if the loyal input boxes are visible and for the right action.
+	 Also capable of catching number format errors for incorrect loyalty codes.
+	 @return -1 if an invalid loyalty code was encountered, 0 otherwise.
 	 */
 	private int checkLoyal() {
 		if(!this.moreInfoPane.isVisible() || !this.validORcampusCodeField.isVisible()) {

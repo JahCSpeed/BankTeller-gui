@@ -257,6 +257,9 @@ public class AccountDatabase {
 		for(int i = 0; i < this.numAcct; i++) {
 			fee = this.accounts[i].fee();
 			montlyInterst = ( (this.accounts[i].getBalance() * (this.accounts[i].monthlyInterest())));
+			if(montlyInterst <= 0) {
+				montlyInterst = 0;
+			}
 			returnString += (this.accounts[i].toString() + "::fee $" + numberFormat.format(fee) + "::monthly interest $" + numberFormat.format(montlyInterst) + "\n");
 		}
 		return returnString;
@@ -277,6 +280,9 @@ public class AccountDatabase {
 		for(int i = 0; i < this.numAcct; i++) {
 			fee = this.accounts[i].fee();
 			montlyInterst = ( (this.accounts[i].getBalance() * (this.accounts[i].monthlyInterest())));
+			if(montlyInterst <= 0) {
+				montlyInterst = 0;
+			}
 			this.accounts[i].balance+=montlyInterst;
 			this.accounts[i].balance-=fee;
 			returnString += (this.accounts[i].toString()) + "\n";

@@ -105,13 +105,12 @@ public class GuiController extends Application implements Initializable{
 			case "Close Account":
 				tempAccount = this.closeAccountCommand(this.accountType, this.accountProfile);
 				if(tempAccount == null) {
+					this.openAccountPaneError.setText("ERROR " +  this.accountProfile.toString() + " " + this.accountType + " is not in the database.");
 					return;
 				}
-				if(this.mainDatabase.getAccount(tempAccount) == null) {
-					this.openAccountPaneError2.setText("ERROR " + tempAccount.getHolder().toString() + " " + tempAccount.getType() + " is not in the database.");
-				}
 				if(!this.mainDatabase.close(tempAccount)) {
-					this.openAccountPaneError2.setText("ERROR Account is closed already.");
+					this.openAccountPaneError.setText("ERROR Account is closed already.");
+					return;
 				}else {
 					this.goodMessage.setText("Account closed.");
 				}

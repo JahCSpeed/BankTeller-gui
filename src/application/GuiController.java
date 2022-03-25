@@ -29,7 +29,12 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
- 
+ The GuiController contains all the main functionalities for the Bank Teller user interface and can process actions and show errors.
+ It has a three step procedure for the User Interface, which are:
+ 	1. Select the action.
+ 	2. Fill in the parameters for the holder and account type.
+ 	3. State the amount of money to deposit in or withdraw out of the account.
+ Note not all steps are executed based on the action selected. Print commands, for instance, only do Step 1.
  @author Jah C. Speed, Abe Vitangcol
  */
 public class GuiController extends Application implements Initializable{
@@ -58,13 +63,15 @@ public class GuiController extends Application implements Initializable{
 	private int campusCode, isLoyal;
 	
 	private final String[] commandOptions = {"Open Account", "Close Account", "Deposit Money", "Withdraw Money",
-			"Display Database", "Display Database by account type", "Display accounts with fees and montly interst","Update Balances", "Quit"};
+			"Display Database", "Display Database by account type", "Display accounts with fees and monthly interest","Update Balances", "Quit"};
 	private final String CHECKING = "C", COLLEGE_CHECKING = "CC", SAVINGS = "S", MONEY_MARKET = "MM";
 	private AccountDatabase mainDatabase;
 	private static final double MM_BALANCE_THRESHOLD = 2500;
 	
 	/**
-	 
+	 Initializes the GUI by setting up the choice box, hiding all unnecessary information panes, and initializes the database.
+	 @param arg0 
+	        arg1 
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -84,8 +91,10 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 
-	 @param event
+	 Does a specific action based on the choice made from the choice box.
+	 After successfully doing the said action, returns back to the default user interface.
+	 Will not return back to the default interface if an error was encountered.
+	 @param event A button click on continue to execute the action.
 	 */
 	public void doAction(ActionEvent event) {
 		Account tempAccount;
@@ -192,10 +201,11 @@ public class GuiController extends Application implements Initializable{
 	
 	/**
 	 Attempts to open an account based on the params given.
-	 @param accountType
+	 @param accountType The type of account to be opened.
 	        profile The identifications of a person (fname, lname, dob)
 	 	    balance The amount to deposit into the new account.
 	 		code The campus code for a college checking account, if applicable and necessary.
+	 		isLoyal A 0 or 1 value stating if the holder is loyal or not. Savings account only.
 	 @return The account created based on the accountType given if there are no problems.
 	 		 null otherwise (a problem was encountered in making the account)
 	 */
@@ -394,7 +404,8 @@ public class GuiController extends Application implements Initializable{
 	}
 	
 	/**
-	 Goes back to the
+	 Goes back to the default look of the GUI, which is a similar look as when the GUI was first opened.
+	 Used when one set of actions is completed. Does not reset the drop down menu of the GUI.
 	 */
 	private void resetToDefault() {
 		clearAllFields();
@@ -675,11 +686,11 @@ public class GuiController extends Application implements Initializable{
 		}catch(IndexOutOfBoundsException e){
 			fname = null;
 			lname = null;
-			this.openAccountPaneError.setText("Invalid Name. Must Be in format \"FirstName LastName\"");
+			this.openAccountPaneError.setText("Invalid Name. Must Be in format \"FirstName LastName\".");
 			return -1;
 		}
 		if(!isButtonSelected()) {
-			this.openAccountPaneError.setText("Must select account type");
+			this.openAccountPaneError.setText("Must select account type.");
 			return -1;
 		}
 		this.dateOfBirth = new Date(this.dobField.getText());
